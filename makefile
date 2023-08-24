@@ -14,7 +14,7 @@ test: test.c
 
 # Compile library
 libmemory: ./lib/*
-	gcc -fPIC -shared -lpthread ./lib/*.c -o $(LIB) -ldl
+	gcc -fPIC -shared -ldl -lpthread -O2 -fdevirtualize -fgraphite ./lib/*.c -o $(LIB)
 
 # Using libmemory.so to run app
 run: 
