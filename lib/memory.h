@@ -1,5 +1,5 @@
-#ifndef memory_H
-#define memory_H
+#ifndef MEMORY_H
+#define MEMORY_H
 #define _GNU_SOURCE
 
 #include <stdio.h>

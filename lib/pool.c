@@ -63,7 +63,7 @@ void update_pool_status(int poolID, int status){
 }
 
 bool get_poolID(void *ptr, int *poolID){
-    #if CRAZY_OPTIMIZATION 
+    #ifdef CRAZY_OPTIMIZATION 
         if((char *)ptr < (char *)0x6f0000000000){
             return false;
         }

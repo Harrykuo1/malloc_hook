@@ -1,3 +1,6 @@
+#ifndef SETTING_H
+#define SETTING_H
+
 // Parameter
 #define POOL_NUM 10000
 #define POOL_SIZE 8192
@@ -6,7 +9,7 @@
 // Debug mode
 #define LOG_MODE true
 #define DEBUG_AT_CMD false
-#define CRAZY_OPTIMIZATION false
+#define CRAZY_OPTIMIZATION 
 
 // Path
 #define ABSOLUTE_PATH false
@@ -17,4 +20,4 @@
     #define LOG_PATH "./log/"
 #endif
 
-
+#endif

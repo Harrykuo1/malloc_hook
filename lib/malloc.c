@@ -1,4 +1,5 @@
 #include "memory.h"
+#include "debug.h"
 
 extern int event_fd;
 
@@ -19,10 +20,7 @@ void *malloc(size_t size){
     char buf[BUF_LEN];
     init_check();
 
-    #if DEBUG_AT_CMD
-        snprintf(buf, BUF_LEN, "Malloc %lu\n", size);
-        write(1, buf, strlen(buf));
-    #endif
+    DEBUG_CMD("Malloc %lu\n", size);
 
     void *ret;
     int poolID;
@@ -48,10 +46,7 @@ void *calloc(size_t num, size_t size){
     char buf[BUF_LEN];
     init_check();
 
-    #if DEBUG_AT_CMD
-        snprintf(buf, BUF_LEN, "Calloc %d %lu\n", num, size);
-        write(1, buf, strlen(buf));
-    #endif
+    DEBUG_CMD("Calloc %d %lu\n", num, size);
 
     void *ret;
     int poolID;
@@ -78,10 +73,7 @@ void *realloc(void *ptr, size_t size){
     char buf[BUF_LEN];
     init_check();
 
-    #if DEBUG_AT_CMD
-        snprintf(buf, BUF_LEN, "Realloc %p %lu\n", ptr, size);
-        write(1, buf, strlen(buf));
-    #endif
+    DEBUG_CMD("Realloc %p %lu\n", ptr, size);
 
     void *ret;
     int poolID;
@@ -120,11 +112,8 @@ void *realloc(void *ptr, size_t size){
 void free(void *ptr){
     char buf[BUF_LEN];
     init_check();
-
-    #if DEBUG_AT_CMD
-        snprintf(buf, BUF_LEN, "Free %p\n", ptr);
-        write(1, buf, strlen(buf));
-    #endif
+    
+    DEBUG_CMD("Free %p\n", ptr);
 
     if(ptr == NULL){
         return;
