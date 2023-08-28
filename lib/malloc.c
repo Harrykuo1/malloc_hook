@@ -3,10 +3,10 @@
 
 extern int event_fd;
 
+// This function will get the origin memory allocation function from stanard libary.
+// It will use function pointer to store it. 
 void hook_init(){
-    #if LOG_MODE
-        write(event_fd, "Init hook\n", sizeof("Init hook"));
-    #endif
+    DEBUG_LOG(event_fd, "Init hook\n");
 
     real_malloc = (void *(*)(size_t))dlsym(RTLD_NEXT, "malloc");
     real_calloc = (void *(*)(size_t, size_t))dlsym(RTLD_NEXT, "calloc");
@@ -25,18 +25,11 @@ void *malloc(size_t size){
     void *ret;
     int poolID;
     if(size <= POOL_SIZE && fetch_pool(&ret)){
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Malloc  pool %p %lu\n", ret, size);
-            write(event_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(event_fd, "Malloc  pool %p %lu\n", ret, size);
     }
     else{
         ret = (*real_malloc)(size);
-
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Malloc  libc %p %lu\n", ret, size);
-            write(event_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(event_fd, "Malloc  libc %p %lu\n", ret, size);
     }
 
     return ret;
@@ -51,19 +44,12 @@ void *calloc(size_t num, size_t size){
     void *ret;
     int poolID;
     if(num * size <= POOL_SIZE && fetch_pool(&ret)){
-        // memset(ret, 0, num * size);
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Calloc  pool %p %lu\n", ret, num*size);
-            write(event_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(event_fd, "Calloc  pool %p %lu\n", ret, num*size);
     }
     else{
         ret = (*real_calloc)(num, size);
 
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Calloc  libc %p %lu\n", ret, num*size);
-            write(event_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(event_fd, "Calloc  libc %p %lu\n", ret, num*size);
     }
 
     return ret;
@@ -81,29 +67,20 @@ void *realloc(void *ptr, size_t size){
         if(size <= POOL_SIZE){
             ret = ptr;
 
-            #if LOG_MODE
-                snprintf(buf, BUF_LEN, "Realloc pool1 %p %lu\n", ret, size);
-                write(event_fd, buf, strlen(buf));
-            #endif
+            DEBUG_LOG(event_fd, "Realloc pool1 %p %lu\n", ret, size);
         }
         else{
             ret = (*real_malloc)(size);
             memcpy(ret, ptr, size);
             free(ptr);
 
-            #if LOG_MODE
-                snprintf(buf, BUF_LEN, "Realloc pool2 %p %lu\n", ret, size);
-                write(event_fd, buf, strlen(buf));
-            #endif
+            DEBUG_LOG(event_fd, "Realloc pool2 %p %lu\n", ret, size);
         }
     }
     else{
         ret = (*real_realloc)(ptr, size);
 
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Realloc libc %p %lu\n", ret, size);
-            write(event_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(event_fd, "Realloc libc %p %lu\n", ret, size);
     }
 
     return ret;
@@ -121,20 +98,12 @@ void free(void *ptr){
 
     int poolID;
     if(get_poolID(ptr, &poolID)){
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Free    pool %p\n", ptr);
-            write(event_fd, buf, strlen(buf));
-        #endif
-
+        DEBUG_LOG(event_fd, "Free    pool %p\n", ptr);
         update_pool_status(poolID, 2);
     }
     else{
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "Free    libc %p\n", ptr);
-            write(event_fd, buf, strlen(buf));
-        #endif
-
-        (real_free)(ptr);
+        DEBUG_LOG(event_fd, "Free    libc %p\n", ptr);
+        (*real_free)(ptr);
     }
 
     return;

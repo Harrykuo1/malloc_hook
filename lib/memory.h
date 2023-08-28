@@ -15,8 +15,8 @@
 #include <pthread.h>
 #include <sys/mman.h>
 
-
 #include "setting.h"
+#include "debug.h"
 
 typedef struct pool{
     int status;

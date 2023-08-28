@@ -7,9 +7,7 @@ void init(){
     log_init();
     hook_init();
     pool_init();
-    #if LOG_MODE
-        write(event_fd, "Init end\n", sizeof("Init end"));
-    #endif
+    DEBUG_LOG(event_fd, "Init end\n");
     return;
 }
 

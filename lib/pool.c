@@ -9,9 +9,7 @@ int pool_ptr;
 
 void pool_init(){
     char buf[BUF_LEN];
-    #if LOG_MODE
-        write(event_fd, "Init pool\n", sizeof("Init pool"));
-    #endif
+    DEBUG_LOG(event_fd, "Init pool\n");
 
     pool_ptr = 0;
     pools = (Pool **)mmap(NULL, sizeof(Pool*) * POOL_NUM, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0); 
@@ -20,17 +18,11 @@ void pool_init(){
         pools[i]->status = 0;
         pools[i]->address = mmap(NULL, POOL_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
         if (pools[i]->address == MAP_FAILED) {
-            #if LOG_MODE
-                snprintf(buf, BUF_LEN, "Init pool error %d\n", i);
-                write(event_fd, buf, strlen(buf));
-            #endif
+            DEBUG_LOG(event_fd, "Init pool error %d\n", i);
             perror("mmap failed\n");
             exit(1);
         }
-        #if LOG_MODE
-            snprintf(buf, BUF_LEN, "%p\n", pools[i]->address);
-            write(pool_fd, buf, strlen(buf));
-        #endif
+        DEBUG_LOG(pool_fd, "%p\n", pools[i]->address);
     }
 
     return;

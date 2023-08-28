@@ -7,7 +7,7 @@ void log_init(){
         event_fd = open(LOG_PATH"event.txt", O_WRONLY | O_CREAT | O_APPEND, 0640);
         pool_fd = open(LOG_PATH"pool.txt", O_WRONLY | O_CREAT | O_APPEND, 0640);
         tmp_fd = open(LOG_PATH"tmp.txt", O_WRONLY | O_CREAT | O_APPEND, 0640);
-        write(event_fd, "Init log\n", sizeof("Init log"));
+        DEBUG_LOG(event_fd, "Init log\n");
     #endif
     return;
 }
